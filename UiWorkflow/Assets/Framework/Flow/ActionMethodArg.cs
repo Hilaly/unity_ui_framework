@@ -42,6 +42,9 @@ namespace Framework.Flow
             if (t == typeof(double) || typeof(double?) == t)
                 return double.Parse(value);
 
+            if (t == typeof(bool) || typeof(bool?) == t)
+                return bool.Parse(value);
+
             if (t.IsEnum)
                 return Enum.Parse(t, value, true);
 
