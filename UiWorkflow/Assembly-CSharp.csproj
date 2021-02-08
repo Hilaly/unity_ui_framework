@@ -94,6 +94,7 @@
     <Compile Include="Assets\Framework\Ui\ViewModelMethodAttribute.cs" />
     <Compile Include="Assets\Framework\Ui\ViewModelMonoBehaviour.cs" />
     <Compile Include="Assets\Framework\Ui\ViewModelPropertyAttribute.cs" />
+    <Compile Include="Assets\Framework\Ui\ViewModelTemplate.cs" />
     <Compile Include="Assets\Framework\ZenjectExtension\FrameworkInstaller.cs" />
     <Compile Include="Assets\Framework\ZenjectExtension\ZenjectAppRouter.cs" />
     <Reference Include="UnityEngine.Purchasing">

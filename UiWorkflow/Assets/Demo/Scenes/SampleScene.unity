@@ -1079,6 +1079,7 @@ GameObject:
   - component: {fileID: 1561852492}
   - component: {fileID: 1561852491}
   - component: {fileID: 1561852493}
+  - component: {fileID: 1561852494}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -1156,6 +1157,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b29a374991bc529448dc888090849c76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1561852494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561852489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5238dc27061b4414a3d14d2c46f41497, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _name: TestFromPrefab
+  properties:
+  - name: NewNickname
+  - name: Nickname
 --- !u!1 &1590249958
 GameObject:
   m_ObjectHideFlags: 0
