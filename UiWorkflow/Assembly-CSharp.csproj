@@ -69,11 +69,11 @@
     <Compile Include="Assets\Demo\Scripts\Context.cs" />
     <Compile Include="Assets\Demo\Scripts\Generated\GameViewModel.cs" />
     <Compile Include="Assets\Demo\Scripts\Generated\ResultViewModel.cs" />
-    <Compile Include="Assets\Demo\Scripts\Generated\TestViewModel.cs" />
     <Compile Include="Assets\Demo\Scripts\Generated\TutorialViewModel.cs" />
     <Compile Include="Assets\Demo\Scripts\Hyper\GameController.cs" />
-    <Compile Include="Assets\Demo\Scripts\Tests\TestController.cs" />
-    <Compile Include="Assets\Demo\Scripts\Tests\TestModel.cs" />
+    <Compile Include="Assets\Demo\Scripts\Hyper\GameModel.cs" />
+    <Compile Include="Assets\Demo\Scripts\Hyper\LevelResultController.cs" />
+    <Compile Include="Assets\Demo\Scripts\Hyper\LevelResultModel.cs" />
     <Compile Include="Assets\Framework\Flow\ActionContext.cs" />
     <Compile Include="Assets\Framework\Flow\ActionMethodArg.cs" />
     <Compile Include="Assets\Framework\Flow\ActionMethodDescription.cs" />

@@ -6,6 +6,8 @@ namespace Demo.Scripts
     // it's better to use dependency injection
     public class Context : MonoBehaviour
     {
+        [SerializeField] private string _startpath;
+        
         [SerializeField] private TutorialViewModel _tutorialPrefab;
         [SerializeField] private GameViewModel _gamePrefab;
         [SerializeField] private ResultViewModel _resultPrefab;
@@ -26,6 +28,8 @@ namespace Demo.Scripts
             appRoute.RegisterController(resController);
             
             //TODO: register prefabs
+
+            appRoute.Run(_startpath);
         }
     }
 }

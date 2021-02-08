@@ -1,24 +1,10 @@
+using System;
 using Framework.Flow;
-using Framework.Ui;
 
 namespace Demo.Scripts
 {
     //We can generate many view models from single model
-    [ViewModelMethod("GameViewModel", "OnTap", "Game/Tap")]
-    [ViewModelMethod("TutorialViewModel", "OnTap", "Game/Run")]
-    public class GameModel : BaseModel<GameModel>
-    {
-        [ViewModelProperty("GameViewModel", "WinsCount")]
-        public int TapsToWin;
-        //Many properties from one property
-        [ViewModelProperty("GameViewModel", "Taps")]
-        [ViewModelProperty("ResultViewModel", "Taps")]
-        public int CurrentTapsCount;
-        [ViewModelProperty("GameViewModel", "Level")]
-        [ViewModelProperty("ResultViewModel", "Level")]
-        public int Level;
-    }
-    
+
     class GameController : BaseController
     {
         private readonly GameModel _model;
@@ -59,34 +45,10 @@ namespace Demo.Scripts
                     .AddArg("win", _model.CurrentTapsCount >= _model.TapsToWin).Build());
             return Ok;
         }
-    }
 
-    [ViewModelMethod("ResultViewModel", "OnNextLevelClicked", "")]
-    public class LevelResultModel : BaseModel<LevelResultModel>
-    {
-        [ViewModelProperty("ResultViewModel", "IsWin")]
-        public bool IsWin;
-    }
-
-    class LevelResultController : BaseController
-    {
-        //We can use different models 
-        private readonly GameModel _gameModel;
-        private readonly LevelResultModel _model;
-
-        public LevelResultController(GameModel gameModel, LevelResultModel model)
+        public IActionResult LoadSavedGame()
         {
-            _gameModel = gameModel;
-            _model = model;
-        }
-
-        public IActionResult Show(bool win)
-        {
-            _model.IsWin = true;
-            _model.TriggerChange();
-            
-            //TODO: show ui
-            return Ok;
+            return Error(new Exception());
         }
     }
 }

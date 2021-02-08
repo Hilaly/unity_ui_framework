@@ -358,6 +358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad062af0cc074c3da3ac1596e5c9e5e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _startpath: Game/LoadSavedGame
   _tutorialPrefab: {fileID: 9131082849872847419, guid: 23a3a5ac27b1f8b4a8e73c2f79419806,
     type: 3}
   _gamePrefab: {fileID: 2136759689039088978, guid: 077512a0f8014d34c9363fe5a6b14299,
