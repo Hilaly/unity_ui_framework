@@ -7,9 +7,9 @@ using Framework.Flow;
 using UnityEditor;
 using UnityEngine;
 
-namespace Framework.Ui.Editor
+namespace Framework.Ui
 {
-    public class ViewModelsGenerator
+    public partial class ViewModelsGenerator
     {
         public static List<TypeDefine> GetAllViewModelsDefines()
         {

@@ -55,6 +55,9 @@
     <Reference Include="UnityEditor">
       <HintPath>C:\Programs\Unity\2018.4.29f1\Editor\Data\Managed/UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <HintPath>C:\Programs\Unity\2018.4.29f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Microsoft.CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions">
       <HintPath>C:\Programs\Unity\2018.4.29f1\Editor\Data\PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
@@ -64,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Framework\Ui\Editor\ViewModelsGenerator.cs" />
+    <Compile Include="Assets\Framework\Ui\Editor\ViewModelsTemplateGenerator.cs" />
+    <Compile Include="Assets\Framework\Ui\Editor\ViewModelTemplateEditor.cs" />
     <Compile Include="Assets\Framework\WeldExtension\Editor\LocalizationTextBindingEditor.cs" />
     <Reference Include="UnityEngine.Purchasing">
       <HintPath>C:/Work/UiFramework/UiWorkflow/Library/ScriptAssemblies/UnityEngine.Purchasing.dll</HintPath>
@@ -331,9 +336,6 @@
     </Reference>
     <Reference Include="UnityWeld_Editor">
       <HintPath>C:/Work/UiFramework/UiWorkflow/Assets/UnityWeld/UnityWeld_Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>C:/Work/UiFramework/UiWorkflow/Library/PackageCache/com.unity.ads@2.0.8/UnityEngine.Advertisements.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.Advertisements">
       <HintPath>C:/Work/UiFramework/UiWorkflow/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
