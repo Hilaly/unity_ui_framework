@@ -3,11 +3,11 @@ using Framework.Flow;
 
 namespace Demo.Scripts
 {
-    public class MainController : BaseController
+    public class TestController : BaseController
     {
-        private TestModel _model;
+        private readonly TestModel _model;
 
-        public MainController(TestModel model)
+        public TestController(TestModel model)
         {
             _model = model;
         }

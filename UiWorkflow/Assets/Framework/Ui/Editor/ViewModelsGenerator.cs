@@ -33,7 +33,7 @@ namespace Framework.Ui.Editor
         {
             var sources = GetAllTypes();
 
-            var directory = Path.Combine("Assets", "Demo", "Scripts");
+            var directory = Path.Combine("Assets", "Demo", "Scripts", "Generated");
             const string filenameTemplate = "{0}.cs";
             foreach (var filePath in new HashSet<string>(sources.Select(viewModel => viewModel.Name))
                 .Select(fileName => Path.Combine(directory, string.Format(filenameTemplate, fileName))))
@@ -302,7 +302,7 @@ namespace Framework.Ui.Editor
                     $"\t\tpublic void InjectModel({model.FullName} model)");
                 stream.WriteLine("\t\t{");
                 stream.WriteLine("\t\t\tAddOnDispose(model.Subscribe(this));");
-                stream.WriteLine("\t\t\t((IModelObserver<TestModel>) this).ModelChanged(model);");
+                stream.WriteLine($"\t\t\t((IModelObserver<{model.FullName}>) this).ModelChanged(model);");
                 stream.WriteLine("\t\t}");
             }
 

@@ -67,9 +67,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Demo\Scripts\Context.cs" />
-    <Compile Include="Assets\Demo\Scripts\MainController.cs" />
-    <Compile Include="Assets\Demo\Scripts\TestModel.cs" />
-    <Compile Include="Assets\Demo\Scripts\TestViewModel.cs" />
+    <Compile Include="Assets\Demo\Scripts\Generated\GameViewModel.cs" />
+    <Compile Include="Assets\Demo\Scripts\Generated\ResultViewModel.cs" />
+    <Compile Include="Assets\Demo\Scripts\Generated\TestViewModel.cs" />
+    <Compile Include="Assets\Demo\Scripts\Generated\TutorialViewModel.cs" />
+    <Compile Include="Assets\Demo\Scripts\Hyper\GameController.cs" />
+    <Compile Include="Assets\Demo\Scripts\Tests\TestController.cs" />
+    <Compile Include="Assets\Demo\Scripts\Tests\TestModel.cs" />
     <Compile Include="Assets\Framework\Flow\ActionContext.cs" />
     <Compile Include="Assets\Framework\Flow\ActionMethodArg.cs" />
     <Compile Include="Assets\Framework\Flow\ActionMethodDescription.cs" />
@@ -95,6 +99,7 @@
     <Compile Include="Assets\Framework\Ui\ViewModelMonoBehaviour.cs" />
     <Compile Include="Assets\Framework\Ui\ViewModelPropertyAttribute.cs" />
     <Compile Include="Assets\Framework\Ui\ViewModelTemplate.cs" />
+    <Compile Include="Assets\Framework\WeldExtension\LocalizationTextBinding.cs" />
     <Compile Include="Assets\Framework\ZenjectExtension\FrameworkInstaller.cs" />
     <Compile Include="Assets\Framework\ZenjectExtension\ZenjectAppRouter.cs" />
     <Reference Include="UnityEngine.Purchasing">

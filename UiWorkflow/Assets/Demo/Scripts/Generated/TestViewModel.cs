@@ -44,11 +44,11 @@ namespace Demo.Scripts
 
 		[Binding] public void OnButtonClick()
 		{
-			AppRouter.Run($"Main/ButtonClick?newNick={NewNickname}");
+			AppRouter.Run($"Test/ButtonClick?newNick={NewNickname}");
 		}
 		[Binding] public void OnButtonClickException()
 		{
-			AppRouter.Run($"Main/Exception");
+			AppRouter.Run($"Test/Exception");
 		}
 
 		#endregion
@@ -60,10 +60,13 @@ namespace Demo.Scripts
 			Nickname = (System.String)model.Nickname;
 			NewNickname = (System.String)model.Nickname;
 		}
+		#if USE_ZENJECT
+		[Inject]
+		#endif
 		public void InjectModel(Demo.Scripts.TestModel model)
 		{
 			AddOnDispose(model.Subscribe(this));
-			((IModelObserver<TestModel>) this).ModelChanged(model);
+			((IModelObserver<Demo.Scripts.TestModel>) this).ModelChanged(model);
 		}
 
 		#endregion

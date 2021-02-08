@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Framework\Ui\Editor\ViewModelsGenerator.cs" />
+    <Compile Include="Assets\Framework\WeldExtension\Editor\LocalizationTextBindingEditor.cs" />
     <Reference Include="UnityEngine.Purchasing">
       <HintPath>C:/Work/UiFramework/UiWorkflow/Library/ScriptAssemblies/UnityEngine.Purchasing.dll</HintPath>
     </Reference>

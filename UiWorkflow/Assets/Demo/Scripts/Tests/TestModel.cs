@@ -3,8 +3,8 @@ using Framework.Ui;
 
 namespace Demo.Scripts
 {
-    [ViewModelMethod("TestViewModel", "OnButtonClick", "Main/ButtonClick?newNick={NewNickname}")]
-    [ViewModelMethod("TestViewModel", "OnButtonClickException", "Main/"+nameof(MainController.Exception))]
+    [ViewModelMethod("TestViewModel", "OnButtonClick", "Test/ButtonClick?newNick={NewNickname}")]
+    [ViewModelMethod("TestViewModel", "OnButtonClickException", "Test/"+nameof(TestController.Exception))]
     public class TestModel : BaseModel<TestModel>
     {
         [ViewModelProperty("TestViewModel", "Nickname", Namespace = "Demo.Scripts")]
