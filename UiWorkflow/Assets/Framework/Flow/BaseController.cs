@@ -1,4 +1,5 @@
 using System;
+using Framework.Ui;
 
 namespace Framework.Flow
 {
@@ -36,6 +37,11 @@ namespace Framework.Flow
                 .Build();
 
             return GoToPath(appPath);
+        }
+
+        protected IActionResult View<TViewModel>(string optionalName = null) where TViewModel : ViewModelMonoBehaviour
+        {
+            return new ShowViewAction<TViewModel>() {Name = optionalName};
         }
 
         protected IActionResult Ok => new OkAction();

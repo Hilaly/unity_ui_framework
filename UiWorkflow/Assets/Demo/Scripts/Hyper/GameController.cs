@@ -1,10 +1,9 @@
 using System;
 using Framework.Flow;
+using UnityEngine;
 
 namespace Demo.Scripts
 {
-    //We can generate many view models from single model
-
     class GameController : BaseController
     {
         private readonly GameModel _model;
@@ -16,8 +15,8 @@ namespace Demo.Scripts
 
         public IActionResult Run()
         {
-            //TODO: show ui
-            return Ok;
+            //Show game HUD
+            return View<GameViewModel>();
         }
 
         public IActionResult StartLevel(int level)
@@ -28,27 +27,30 @@ namespace Demo.Scripts
             
             //Trigger update all subscribers after data changed
             _model.TriggerChange();
-            //TODO: show ui
-            return Ok;
+
+            //Show start level UI (window with level description)
+            return View<TutorialViewModel>();
         }
 
         public IActionResult Tap()
         {
             _model.CurrentTapsCount += 1;
             _model.TriggerChange();
-            
+
             if (_model.CurrentTapsCount >= _model.TapsToWin)
                 //We can use string call: this.Context.Router.Run($"LevelResult/Show?win=true");
                 //TODO: think about simplify
                 return GoToPath(PathBuilder.Controller<LevelResultController>()
                     .Action(nameof(LevelResultController.Show))
-                    .AddArg("win", _model.CurrentTapsCount >= _model.TapsToWin).Build());
+                    .AddArg("win", _model.CurrentTapsCount >= _model.TapsToWin)
+                    .Build());
             return Ok;
         }
 
         public IActionResult LoadSavedGame()
         {
-            return Error(new Exception());
+            var lastPlayedLevel = PlayerPrefs.GetInt("saved_level", 1);
+            return StartLevel(lastPlayedLevel);
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Framework.Ui;
 using UnityEngine;
 
 namespace Framework.Flow
@@ -20,7 +21,15 @@ namespace Framework.Flow
             }
         }
 
-        private Dictionary<string, Route> _routes = new Dictionary<string, Route>();
+        private readonly Dictionary<string, Route> _routes = new Dictionary<string, Route>();
+        private readonly IViewModelFactory _viewsFactory;
+        private readonly UiLayersManager _uiLayersManager;
+
+        public AppRouter(IViewModelFactory viewsFactory, UiLayersManager uiLayersManager)
+        {
+            _viewsFactory = viewsFactory;
+            _uiLayersManager = uiLayersManager;
+        }
 
         public void RegisterController(BaseController controller)
         {
@@ -51,7 +60,7 @@ namespace Framework.Flow
             var result = await method.Invoke(route.Controller, appPath);
             //Reset context after execution
             route.Controller.Context = savedContext;
-            
+
             return result;
         }
 
@@ -104,12 +113,16 @@ namespace Framework.Flow
 
         ActionContext MakeContext()
         {
-            return new ActionContext(this, null);
+            return MakeContext(null);
         }
-        
+
         ActionContext MakeContext(AppPath appPath)
         {
-            return new ActionContext(this, appPath);
+            return new ActionContext(this, appPath)
+            {
+                UiLayers = _uiLayersManager,
+                ViewModelFactory = _viewsFactory
+            };
         }
     }
 }

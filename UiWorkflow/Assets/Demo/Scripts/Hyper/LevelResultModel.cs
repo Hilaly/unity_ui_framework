@@ -3,9 +3,9 @@ using Framework.Ui;
 
 namespace Demo.Scripts
 {
-    [ViewModelMethod("ResultViewModel", "OnNextLevelClicked", "")]
     public class LevelResultModel : BaseModel<LevelResultModel>
     {
+        //Define property with binding attribute at ResultViewModel
         [ViewModelProperty("ResultViewModel", "IsWin")]
         public bool IsWin;
     }

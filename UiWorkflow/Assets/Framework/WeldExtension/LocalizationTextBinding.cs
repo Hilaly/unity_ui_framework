@@ -54,7 +54,7 @@ namespace Framework.WeldExtension
                                     var value = sources[i]?.GetValue() ?? _localized[i];
                                     _localized[i] = value;
                                 }
-                                catch (Exception e)
+                                catch (Exception)
                                 {
                                     Debug.LogWarning(
                                         $"LocalizationException Key={_textFormat} Args='{string.Join(",", _localized.Select(u => u.ToString()))}', error when try to get value for {_viewModelPropertyName[i]} on {gameObject.name}");

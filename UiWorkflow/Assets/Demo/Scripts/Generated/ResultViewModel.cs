@@ -56,7 +56,7 @@ namespace Demo.Scripts
 
 		[Binding] public void OnNextLevelClicked()
 		{
-			AppRouter.Run($"");
+			AppRouter.Run($"Game/StartLevel?level={Level + 1}");
 		}
 
 		#endregion

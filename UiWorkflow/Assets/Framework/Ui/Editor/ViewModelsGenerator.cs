@@ -11,7 +11,7 @@ namespace Framework.Ui.Editor
 {
     public class ViewModelsGenerator
     {
-        public static List<TypeDefine> GetAllTypes()
+        public static List<TypeDefine> GetAllViewModelsDefines()
         {
             var types = typeof(object).GetAllSubTypes()
                 .Where(type => type.IsClass && !type.IsAbstract)
@@ -20,18 +20,16 @@ namespace Framework.Ui.Editor
 
             var sources = new Dictionary<string, TypeDefine>();
             foreach (var type in types)
-            {
-                Debug.Log($"Parse from model: {type.FullName}");
-                Generate(type, sources);
-            }
+                PrepareDefines(type, sources);
 
             return sources.Values.ToList();
         }
 
+        //TODO: create window and move calling of this method there
         [MenuItem("Framework/Ui/Generate ViewModels from models")]
         public static void RegenerateAllModel()
         {
-            var sources = GetAllTypes();
+            var sources = GetAllViewModelsDefines();
 
             var directory = Path.Combine("Assets", "Demo", "Scripts", "Generated");
             const string filenameTemplate = "{0}.cs";
@@ -62,7 +60,7 @@ namespace Framework.Ui.Editor
                    type.BaseType.GetGenericArguments()[0] == type;
         }
 
-        private static void Generate(Type type, Dictionary<string, TypeDefine> exists)
+        private static void PrepareDefines(Type type, Dictionary<string, TypeDefine> exists)
         {
             TypeDefine GetTypeDefine(string name, string namespaceName)
             {
