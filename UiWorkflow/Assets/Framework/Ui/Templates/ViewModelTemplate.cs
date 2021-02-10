@@ -10,6 +10,7 @@ namespace Framework.Ui
         public string name;
         public string ViewProperty;
         public string Adapter;
+        public List<string> ModelProperties = new List<string>();
     }
 
     [Serializable]
@@ -21,8 +22,8 @@ namespace Framework.Ui
     public class ViewModelTemplate : MonoBehaviour
     {
         public string _name;
-        public List<ViewModelPropertyDescription> properties;
-        public List<ViewModelEventDescription> events;
+        public List<ViewModelPropertyDescription> properties = new List<ViewModelPropertyDescription>();
+        public List<ViewModelEventDescription> events = new List<ViewModelEventDescription>();
 
         public string ViewModelName
         {

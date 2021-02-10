@@ -7,6 +7,6 @@ namespace Demo.Scripts
     {
         //Define property with binding attribute at ResultViewModel
         [ViewModelProperty("ResultViewModel", "IsWin")]
-        public bool IsWin;
+        public bool IsWin { get; set; }
     }
 }

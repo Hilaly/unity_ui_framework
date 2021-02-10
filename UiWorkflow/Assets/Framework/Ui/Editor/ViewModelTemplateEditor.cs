@@ -5,26 +5,63 @@ using Framework.Ui.Adapters;
 using UnityEditor;
 using UnityEngine;
 
-namespace Framework.Ui
+namespace Framework.Ui.Editor
 {
     [CustomEditor(typeof(ViewModelTemplate))]
-    public class ViewModelTemplateEditor : Editor
+    public class ViewModelTemplateEditor : UnityEditor.Editor
     {
         private ViewModelTemplate targetScript;
         
         private bool _propertiesFoldout = true;
-        private List<bool> _propertiesFoldouts = new List<bool>();
+        private readonly List<bool> _propertiesFoldouts = new List<bool>();
         
         private bool _eventsFoldout = true;
-        private List<bool> _eventsFoldouts = new List<bool>();
+        private readonly List<bool> _eventsFoldouts = new List<bool>();
 
         #region Caches
 
-        private List<ViewModelsGenerator.ComponentPropertyDefine> _allPropertiesCache;
-        private List<ViewModelsGenerator.ComponentPropertyDefine> GetAllProperties()
+        #region View Model Properties
+
+        private List<ViewModelsGenerator.ComponentPropertyDefine> _allViewPropertiesCache;
+        private List<ViewModelsGenerator.ComponentPropertyDefine> _prefabViewPropertiesCache;
+        private List<ViewModelsGenerator.ComponentPropertyDefine> GetAllViewProperties()
         {
-            return _allPropertiesCache ?? (_allPropertiesCache = ViewModelsGenerator.CollectAllViewProperties());
+            return _allViewPropertiesCache ?? (_allViewPropertiesCache = ViewModelsGenerator.CollectAllViewProperties());
         }
+        private List<ViewModelsGenerator.ComponentPropertyDefine> GetNeededViewProperties()
+        {
+            if(ViewModelEditor.IsFullMode)
+                return _allViewPropertiesCache ?? (_allViewPropertiesCache = ViewModelsGenerator.CollectAllViewProperties());
+            if (_prefabViewPropertiesCache == null)
+            {
+                var existComponents = new HashSet<Type>(targetScript.gameObject.GetComponentsInChildren<Component>()
+                    .Select(x => x.GetType())) {typeof(GameObject)};
+                
+                _prefabViewPropertiesCache = GetAllViewProperties()
+                    .Where(x => existComponents.Contains(x.ComponentType))
+                    .ToList();
+            }
+
+            return _prefabViewPropertiesCache;
+        }
+
+        #endregion
+
+        #region Model Properties
+
+        private List<ViewModelsGenerator.ComponentPropertyDefine> _allModelPropertiesCache;
+
+        private ViewModelsGenerator.ComponentPropertyDefine[] GetAllModelProperties(Type baseType)
+        {
+            return (_allModelPropertiesCache ??
+                    (_allModelPropertiesCache = ViewModelsGenerator.CollectAllModelProperties()))
+                .Where(x => baseType.IsAssignableFrom(x.PropertyType))
+                .ToArray();
+        }
+
+        #endregion
+
+        #region Adapters
 
         private List<Type> _allAdapters;
 
@@ -35,14 +72,22 @@ namespace Framework.Ui
 
         private List<Type> GetAdapters(Type targetType)
         {
-            return GetAllAdapters().Where(x => x.GetMethod("Convert")?.ReturnType == targetType && targetType != null)
+            return GetAllAdapters()
+                .Where(x => x == null || x.GetMethod("Convert")?.ReturnType == targetType && targetType != null)
                 .ToList();
         }
+        
+        #endregion
         
         #endregion
 
         private void OnEnable()
         {
+            _allModelPropertiesCache = null;
+            _allAdapters = null;
+            _allViewPropertiesCache = null;
+            _prefabViewPropertiesCache = null;
+            
             targetScript = (ViewModelTemplate) target;
         }
 
@@ -85,6 +130,8 @@ namespace Framework.Ui
                         EditorGUI.indentLevel--;
                     }
                 }
+
+                EditorGUILayout.Space();
 
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Add property"))
@@ -130,6 +177,8 @@ namespace Framework.Ui
                         EditorGUI.indentLevel--;
                     }
                 }
+
+                EditorGUILayout.Space();
 
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button("Add event"))
@@ -192,7 +241,8 @@ namespace Framework.Ui
             }
 
             //View property
-            var allStrProperties = GetAllProperties().Select(x => x.DisplayText).ToArray();
+            var allProperties = GetNeededViewProperties();
+            var allStrProperties = allProperties.Select(x => x.DisplayText).ToArray();
             var selectedProperty = Array.IndexOf(allStrProperties, desc.ViewProperty);
             var newSelected = EditorGUILayout.Popup("ViewProperty", selectedProperty, allStrProperties);
             if (newSelected != selectedProperty)
@@ -202,24 +252,123 @@ namespace Framework.Ui
             }
 
             //Adapter
+            //TODO: draw adapter parameters
             var temp = GUI.enabled;
-            var viewProp = newSelected >= 0 ? GetAllProperties()[newSelected] : null;
+            var viewProp = newSelected >= 0 ? allProperties[newSelected] : null;
             GUI.enabled = viewProp != null && temp;
             var allAdapters = GetAdapters(viewProp?.PropertyType);
-            var allStrAdapters = allAdapters.Select(x => x.Name).ToArray();
+            var allStrAdapters = allAdapters.Select(x => x?.Name ?? "--").ToArray();
             var selectedAdapter = Array.IndexOf(allStrAdapters, desc.Adapter);
             var newAdapter = EditorGUILayout.Popup("Adapter", selectedAdapter, allStrAdapters);
             var newAdapterValue = newAdapter >= 0 ? allStrAdapters[newAdapter] : null;
             if (desc.Adapter != newAdapterValue)
             {
-                desc.Adapter = newAdapterValue;
+                desc.Adapter = newAdapter > 0 ? newAdapterValue : null;
+                desc.ModelProperties.Clear();
                 EditorUtility.SetDirty(targetScript);
+            }
+            GUI.enabled = temp;
+            
+            //Model properties
+            temp = GUI.enabled;
+            var adapter = newAdapter >= 0 ? allAdapters[newAdapter] : null;
+            GUI.enabled = (adapter != null || viewProp != null) && temp;
+            if (adapter == null)
+            {
+                var targetCount = 1;
+                if (desc.ModelProperties.Count > targetCount) 
+                    desc.ModelProperties.RemoveRange(targetCount, desc.ModelProperties.Count - targetCount);
+                while (desc.ModelProperties.Count < targetCount)
+                    desc.ModelProperties.Add(string.Empty);
+
+                var argType = viewProp?.PropertyType;
+                for (var i = 0; i < desc.ModelProperties.Count; ++i)
+                {
+                    var tempModelPropertyValue = DrawSelectModelProperty(argType, desc.ModelProperties[i]);
+                    if (tempModelPropertyValue != desc.ModelProperties[i])
+                    {
+                        desc.ModelProperties[i] = tempModelPropertyValue;
+                        EditorUtility.SetDirty(targetScript);
+                    }
+                }
+            }
+            else
+            {
+                var adapterInfo = adapter.GetAttribute<AdapterAttribute>(false);
+                if (adapterInfo.ArgumentsCount >= 0)
+                {
+                    var targetCount = adapterInfo.ArgumentsCount;
+                    if (desc.ModelProperties.Count > targetCount) 
+                        desc.ModelProperties.RemoveRange(targetCount, desc.ModelProperties.Count - targetCount);
+                    while (desc.ModelProperties.Count < targetCount)
+                        desc.ModelProperties.Add(string.Empty);
+
+                    var argType = adapterInfo.SourceType;
+                    for (var i = 0; i < desc.ModelProperties.Count; ++i)
+                    {
+                        var tempModelPropertyValue = DrawSelectModelProperty(argType, desc.ModelProperties[i]);
+                        if (tempModelPropertyValue != desc.ModelProperties[i])
+                        {
+                            desc.ModelProperties[i] = tempModelPropertyValue;
+                            EditorUtility.SetDirty(targetScript);
+                        }
+                    }
+                }
+                else
+                {
+                    var argType = adapterInfo.SourceType;
+                    for (var i = 0; i < desc.ModelProperties.Count; ++i)
+                    {
+                        var tempModelPropertyValue = DrawSelectModelProperty(argType, desc.ModelProperties[i]);
+                        if (tempModelPropertyValue != desc.ModelProperties[i])
+                        {
+                            desc.ModelProperties[i] = tempModelPropertyValue;
+                            EditorUtility.SetDirty(targetScript);
+                        }
+                    }
+
+                    EditorGUILayout.BeginHorizontal();
+                    
+                    if (GUILayout.Button("Add"))
+                    {
+                        desc.ModelProperties.Add(string.Empty);
+                        EditorUtility.SetDirty(targetScript);
+                    }
+
+                    var buttonEnabled = desc.ModelProperties.Count > 0;
+                    var tempAdd = GUI.enabled;
+                    GUI.enabled = buttonEnabled && tempAdd && temp;
+                    if (GUILayout.Button("Remove"))
+                    {
+                        desc.ModelProperties.RemoveAt(desc.ModelProperties.Count - 1);
+                        EditorUtility.SetDirty(targetScript);
+                    }
+                    GUI.enabled = tempAdd;
+                    
+                    EditorGUILayout.EndHorizontal();
+                }
             }
             GUI.enabled = temp;
 
             //TODO: other properties
             
             EditorGUILayout.EndVertical();
+        }
+
+        string DrawSelectModelProperty(Type baseType, string oldValue)
+        {
+            if (baseType == null)
+                return string.Empty;
+
+            var allModels = GetAllModelProperties(baseType);
+            var allStrModels = allModels
+                .Select(x => $"{x.ComponentType.Name}/{x.PropertyInfo.Name}:{x.PropertyType.Name}")
+                .ToArray();
+            var selectedModel = Array.IndexOf(allStrModels, oldValue);
+            var newModel = EditorGUILayout.Popup(selectedModel, allStrModels);
+            var newModelValue = newModel >= 0 ? allStrModels[newModel] : string.Empty;
+
+            return newModelValue;
         }
 
         private void Regenerate()

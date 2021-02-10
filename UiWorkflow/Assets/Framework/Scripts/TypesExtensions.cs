@@ -39,5 +39,11 @@ namespace Framework
                 result[i] = (T) attributes[i];
             return result;
         }
+
+        public static T GetAttribute<T>(this MemberInfo info, bool inherit) where T : Attribute
+        {
+            var attributes = info.GetCustomAttributes(typeof(T), inherit);
+            return attributes.Length > 0 ? (T) attributes[0] : default;
+        }
     }
 }

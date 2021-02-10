@@ -10,15 +10,15 @@ namespace Demo.Scripts
     public class GameModel : BaseModel<GameModel>
     {
         [ViewModelProperty("GameViewModel", "WinsCount")]
-        public int TapsToWin;
+        public int TapsToWin { get; set; }
 
         //Many properties from one property
         [ViewModelProperty("GameViewModel", "Taps")] 
         [ViewModelProperty("ResultViewModel", "Taps")]
-        public int CurrentTapsCount;
+        public int CurrentTapsCount { get; set; }
 
         [ViewModelProperty("GameViewModel", "Level")] 
         [ViewModelProperty("ResultViewModel", "Level")]
-        public int Level;
+        public int Level { get; set; }
     }
 }

@@ -5,18 +5,14 @@ using System.Linq;
 using System.Reflection;
 using Framework.Flow;
 using UnityEditor;
-using UnityEngine;
 
-namespace Framework.Ui
+namespace Framework.Ui.Editor
 {
     public partial class ViewModelsGenerator
     {
-        public static List<TypeDefine> GetAllViewModelsDefines()
+        private static List<TypeDefine> GetAllViewModelsDefines()
         {
-            var types = typeof(object).GetAllSubTypes()
-                .Where(type => type.IsClass && !type.IsAbstract)
-                .Where(IsInheritedFromModel)
-                .ToList();
+            var types = CollectAllModelTypes();
 
             var sources = new Dictionary<string, TypeDefine>();
             foreach (var type in types)
@@ -25,13 +21,12 @@ namespace Framework.Ui
             return sources.Values.ToList();
         }
 
-        //TODO: create window and move calling of this method there
-        [MenuItem("Framework/Ui/Generate ViewModels from models")]
-        public static void RegenerateAllModel()
+        internal static void RegenerateAllModel(string directory)
         {
+            Directory.CreateDirectory(directory);
+            
             var sources = GetAllViewModelsDefines();
 
-            var directory = Path.Combine("Assets", "Demo", "Scripts", "Generated");
             const string filenameTemplate = "{0}.cs";
             foreach (var filePath in new HashSet<string>(sources.Select(viewModel => viewModel.Name))
                 .Select(fileName => Path.Combine(directory, string.Format(filenameTemplate, fileName))))
@@ -44,6 +39,7 @@ namespace Framework.Ui
             {
                 var fileName = source.Name;
                 var filePath = Path.Combine(directory, string.Format(filenameTemplate, fileName));
+                UnityEngine.Debug.Log($"Generating {source.Name} -> {filePath}");
                 using (var stream = File.AppendText(filePath))
                 {
                     WriteData(source, stream);
@@ -133,7 +129,7 @@ namespace Framework.Ui
             }
         }
 
-        public class TypeDefine
+        private class TypeDefine
         {
             public string Namespace;
             public string Name;
