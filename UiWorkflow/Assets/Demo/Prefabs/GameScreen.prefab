@@ -520,7 +520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5238dc27061b4414a3d14d2c46f41497, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: GameScreenViewModel
+  _viewModelName: GameScreenViewModel
   properties:
   - name: LevelText
     ViewProperty: 'UnityEngine.UI.Text/text : String'

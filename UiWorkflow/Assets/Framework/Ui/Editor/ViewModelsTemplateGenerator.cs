@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Framework.Flow;
@@ -115,6 +116,58 @@ namespace Framework.Ui.Editor
                 .ToList();
             result.Insert(0, null);
             return result;
+        }
+
+        public static void GeneratePrefab(ViewModelTemplate template, string directory)
+        {
+            Directory.CreateDirectory(directory);
+            var fileName = template.ViewModelName;
+            var filePath = Path.Combine(directory, string.Format(FilenameTemplate, fileName));
+            UnityEngine.Debug.Log($"Generating {template.ViewModelName} -> {filePath}");
+            using (var stream = File.CreateText(filePath))
+            {
+                WriteData(template, stream);
+            }
+        }
+
+        private static void WriteData(ViewModelTemplate typeDefine, StreamWriter stream)
+        {
+            var allTypes = typeof(object).GetAllSubTypes();
+            var allAdapters = CollectAdapters();
+            stream.WriteLine(
+                "//Generated from prefab, don't change code, all changes can be lost if it will be regenerated");
+            stream.WriteLine();
+            stream.WriteLine($"using UnityEngine;");
+            stream.WriteLine();
+            stream.WriteLine($"namespace {ViewModelEditor.Namespace}");
+            stream.WriteLine("{");
+            stream.WriteLine($"\tpublic partial class {typeDefine.ViewModelName} : UnityEngine.MonoBehaviour");
+            stream.WriteLine("\t{");
+            foreach (var propDef in typeDefine.properties)
+            {
+                var viewArgs = propDef.ViewProperty.Split(":", StringSplitOptions.RemoveEmptyEntries);
+                var viewTypes = viewArgs[0].Split("/", StringSplitOptions.RemoveEmptyEntries);
+                var viewComponentTypeName = viewTypes[0].Trim();
+                var viewComponentPropertyName = viewTypes[1].Trim();
+                var viewType = allTypes.Find(x => x.FullName == viewComponentTypeName);
+                var viewProperty = viewType.GetProperty(viewComponentPropertyName);
+                stream.WriteLine($"\t\t[SerializeField] {viewType.FullName} _{propDef.name};");
+                if (propDef.Adapter.NotNullOrEmpty())
+                {
+                    var adapterArgs = $"/*Insert args for {propDef.Adapter} here*/";
+                    var adapterType = allAdapters.Find(x => x?.Name == propDef.Adapter);
+                    stream.WriteLine(
+                        $"\t\t[SerializeField] {adapterType.FullName} _{propDef.name}Adapter = new {adapterType.FullName}({adapterArgs});");
+                }
+                stream.WriteLine($"\t\tpublic {viewProperty.PropertyType.FullName} {propDef.name}");
+                stream.WriteLine($"\t\t{{");
+                stream.WriteLine($"\t\t\tget => _{propDef.name}.{viewComponentPropertyName};");
+                stream.WriteLine($"\t\t\tset {{ if(value != _{propDef.name}.{viewComponentPropertyName}) _{propDef.name}.{viewComponentPropertyName} = value; }}");
+                stream.WriteLine($"\t\t}}");
+            }
+            stream.WriteLine();
+            stream.WriteLine("\t}");
+            stream.WriteLine("}");
         }
     }
 }

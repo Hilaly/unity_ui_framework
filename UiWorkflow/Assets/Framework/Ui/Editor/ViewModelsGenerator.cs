@@ -10,6 +10,8 @@ namespace Framework.Ui.Editor
 {
     public partial class ViewModelsGenerator
     {
+        const string FilenameTemplate = "{0}.cs";
+        
         private static List<TypeDefine> GetAllViewModelsDefines()
         {
             var types = CollectAllModelTypes();
@@ -27,9 +29,8 @@ namespace Framework.Ui.Editor
             
             var sources = GetAllViewModelsDefines();
 
-            const string filenameTemplate = "{0}.cs";
             foreach (var filePath in new HashSet<string>(sources.Select(viewModel => viewModel.Name))
-                .Select(fileName => Path.Combine(directory, string.Format(filenameTemplate, fileName))))
+                .Select(fileName => Path.Combine(directory, string.Format(FilenameTemplate, fileName))))
             {
                 if (File.Exists(filePath))
                     File.Delete(filePath);
@@ -38,7 +39,7 @@ namespace Framework.Ui.Editor
             foreach (var source in sources)
             {
                 var fileName = source.Name;
-                var filePath = Path.Combine(directory, string.Format(filenameTemplate, fileName));
+                var filePath = Path.Combine(directory, string.Format(FilenameTemplate, fileName));
                 UnityEngine.Debug.Log($"Generating {source.Name} -> {filePath}");
                 using (var stream = File.AppendText(filePath))
                 {
@@ -214,7 +215,7 @@ namespace Framework.Ui.Editor
         private static void WriteData(TypeDefine typeDefine, StreamWriter stream)
         {
             stream.WriteLine(
-                "//Generated from model, dont change code, all changes can be lost if it will be regenerated");
+                "//Generated from model, don't change code, all changes can be lost if it will be regenerated");
             stream.WriteLine("using UnityWeld.Binding;");
             stream.WriteLine("using Framework.Flow;");
             stream.WriteLine();

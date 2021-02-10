@@ -11,11 +11,11 @@ namespace Framework.Ui.Editor
     public class ViewModelTemplateEditor : UnityEditor.Editor
     {
         private ViewModelTemplate targetScript;
-        
-        private bool _propertiesFoldout = true;
+
+        private bool _propertiesFoldout;
         private readonly List<bool> _propertiesFoldouts = new List<bool>();
-        
-        private bool _eventsFoldout = true;
+
+        private bool _eventsFoldout;
         private readonly List<bool> _eventsFoldouts = new List<bool>();
 
         #region Caches
@@ -89,6 +89,11 @@ namespace Framework.Ui.Editor
             _prefabViewPropertiesCache = null;
             
             targetScript = (ViewModelTemplate) target;
+            if (targetScript.ViewModelName.IsNullOrEmpty())
+            {
+                targetScript.ViewModelName = $"{targetScript.name}ViewModel";
+                EditorUtility.SetDirty(targetScript);
+            }
         }
 
         public override void OnInspectorGUI()
@@ -373,7 +378,8 @@ namespace Framework.Ui.Editor
 
         private void Regenerate()
         {
-            throw new NotImplementedException();
+            ViewModelsGenerator.GeneratePrefab(targetScript, ViewModelEditor.PathToGenerate);
+            AssetDatabase.Refresh();
         }
     }
 }

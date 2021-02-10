@@ -7,6 +7,7 @@ namespace Framework.Ui.Editor
     public class ViewModelEditor
     {
         static readonly string prefViewModelGeneratorPath = "ViewModelGenerator_path";
+        static readonly string prefViewModelGeneratorNamespace = "ViewModelGenerator_namespace";
         static readonly string prefViewModelGeneratorMode = "ViewModelGenerator_mode";
         
         public static string PathToGenerate
@@ -20,7 +21,13 @@ namespace Framework.Ui.Editor
             get => EditorPrefs.GetBool(prefViewModelGeneratorMode, false);
             set => EditorPrefs.SetBool(prefViewModelGeneratorMode, value);
         }
-        
+
+        public static string Namespace
+        {
+            get => EditorPrefs.GetString(prefViewModelGeneratorNamespace, "Ui.Generated");
+            set => EditorPrefs.SetString(prefViewModelGeneratorNamespace, value);
+        }
+
         [PreferenceItem("View Models")]
         static void PreferenceItem()
         {
@@ -31,6 +38,10 @@ namespace Framework.Ui.Editor
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Directory for generated files", GUILayout.Width(200));
             PathToGenerate = EditorGUILayout.TextField(PathToGenerate, GUILayout.ExpandWidth(true));
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Namespace for generated viewmodels", GUILayout.Width(200));
+            Namespace = EditorGUILayout.TextField(Namespace, GUILayout.ExpandWidth(true));
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space();

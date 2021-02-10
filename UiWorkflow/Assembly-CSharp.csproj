@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Demo\Scripts\Context.cs" />
+    <Compile Include="Assets\Demo\Scripts\Generated\GameScreenViewModel.cs" />
     <Compile Include="Assets\Demo\Scripts\Generated\GameViewModel.cs" />
     <Compile Include="Assets\Demo\Scripts\Generated\ResultViewModel.cs" />
     <Compile Include="Assets\Demo\Scripts\Generated\TutorialViewModel.cs" />

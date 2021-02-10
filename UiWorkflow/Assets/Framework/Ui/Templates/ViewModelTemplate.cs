@@ -21,14 +21,14 @@ namespace Framework.Ui
     
     public class ViewModelTemplate : MonoBehaviour
     {
-        public string _name;
+        [SerializeField] string _viewModelName;
         public List<ViewModelPropertyDescription> properties = new List<ViewModelPropertyDescription>();
         public List<ViewModelEventDescription> events = new List<ViewModelEventDescription>();
 
         public string ViewModelName
         {
-            get => _name;
-            set => _name = value;
+            get => _viewModelName;
+            set => _viewModelName = value;
         }
     }
 }
